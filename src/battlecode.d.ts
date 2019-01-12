@@ -81,7 +81,7 @@ interface Robot {
   /**
    * The health of the robot.
    *
-   * Only available for `r = this.me`.
+   * Only available if {@link BCAbstractRobot.me} equals this robot.
    */
   health?: number;
   /**
@@ -140,8 +140,10 @@ interface Robot {
   castle_talk?: number;
   /**
    * The amount of milliseconds this robot has left in it's chess clock.
+   *
+   * Only available if {@link BCAbstractRobot.me} equals this robot.
    */
-  time: number;
+  time?: number;
 }
 declare module 'battlecode' {
   /**

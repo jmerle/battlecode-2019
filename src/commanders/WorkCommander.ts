@@ -1,6 +1,6 @@
-import { MovingCommander } from './MovingCommander';
+import { ImprovedCommander } from './ImprovedCommander';
 
-export class WorkCommander extends MovingCommander {
+export class WorkCommander extends ImprovedCommander {
   protected getAction(): Action | Falsy {
     return this.moveRandomly();
   }

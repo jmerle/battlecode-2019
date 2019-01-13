@@ -1,6 +1,6 @@
 import { Commander } from './Commander';
 
-export abstract class MovingCommander extends Commander {
+export abstract class ImprovedCommander extends Commander {
   protected allDirections: Array<[number, number]> = [
     [0, -1],
     [1, -1],

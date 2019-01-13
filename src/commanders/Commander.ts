@@ -46,25 +46,6 @@ export abstract class Commander {
     return this.getAction();
   }
 
-  protected unitTypeToString(type: number): string {
-    switch (type) {
-      case SPECS.CASTLE:
-        return 'Castle';
-      case SPECS.CHURCH:
-        return 'Church';
-      case SPECS.PILGRIM:
-        return 'Pilgrim';
-      case SPECS.CRUSADER:
-        return 'Crusader';
-      case SPECS.PROPHET:
-        return 'Prophet';
-      case SPECS.PREACHER:
-        return 'Preacher';
-    }
-
-    return type.toString();
-  }
-
   protected isOnMap(x: number, y: number): boolean {
     return this.r._bc_check_on_map(x, y);
   }
@@ -145,5 +126,24 @@ export abstract class Commander {
 
   protected getVisibleRobots(): Robot[] {
     return this.r.getVisibleRobots();
+  }
+
+  protected unitTypeToString(type: number): string {
+    switch (type) {
+      case SPECS.CASTLE:
+        return 'Castle';
+      case SPECS.CHURCH:
+        return 'Church';
+      case SPECS.PILGRIM:
+        return 'Pilgrim';
+      case SPECS.CRUSADER:
+        return 'Crusader';
+      case SPECS.PROPHET:
+        return 'Prophet';
+      case SPECS.PREACHER:
+        return 'Preacher';
+    }
+
+    return type.toString();
   }
 }

@@ -1,7 +1,7 @@
 import { SPECS } from 'battlecode';
-import { MovingCommander } from './MovingCommander';
+import { ImprovedCommander } from './ImprovedCommander';
 
-export class ChurchCommander extends MovingCommander {
+export class ChurchCommander extends ImprovedCommander {
   protected getAction(): Action | Falsy {
     const type = this.getSpawnUnitType();
     const location = this.getSpawnLocation();

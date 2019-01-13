@@ -9,8 +9,8 @@ interface GameState {
   /**
    * A map of id's of visible robots.
    *
-   * The map is represented as a 2 by 2 grid of numbers where most values are -1.
-   * If `shadow[y][x] != -1`, then `shadow[y][x]` is the id of the robot at (x, y).
+   * The map is represented as a 2 by 2 grid of numbers where most values are 0.
+   * If `shadow[y][x] != 0`, then `shadow[y][x]` is the id of the robot at (x, y).
    */
   shadow: number[][];
   /**
@@ -643,7 +643,13 @@ interface Specs {
   /**
    * An array of specs of all the different units.
    *
-   * The index is the id of the unit as specified in the {@link SPECS}, like {@link PILGRIM} and {@link CRUSADER}.
+   * Valid indexes are:
+   * - {@link CASTLE}
+   * - {@link CHURCH}
+   * - {@link PILGRIM}
+   * - {@link CRUSADER}
+   * - {@link PROPHET}
+   * - {@link PREACHER}
    */
   UNITS: UnitSpecs[];
 }
@@ -687,7 +693,7 @@ interface UnitSpecs {
   /**
    * An array specifying the minimum and maximum distance in which this unit can attack.
    */
-  ATTACK_RADIUS: number[] | null;
+  ATTACK_RADIUS: [number, number] | null;
   /**
    * The amount of fuel it takes for this unit to attack.
    */

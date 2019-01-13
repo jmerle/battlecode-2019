@@ -3,6 +3,8 @@
   "rules": {
     "no-implicit-dependencies": false,
     "object-literal-sort-keys": false,
-    "interface-name": [true, "never-prefix"]
+    "interface-name": [true, "never-prefix"],
+    "typedef": [true, "call-signature", "parameter", "property-declaration"],
+    "member-ordering": false
   }
 }

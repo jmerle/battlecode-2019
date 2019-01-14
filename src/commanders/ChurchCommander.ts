@@ -1,7 +1,10 @@
 import { SPECS } from 'battlecode';
+import { Cell } from '../models/Cell';
 import { ImprovedCommander } from './ImprovedCommander';
 
 export class ChurchCommander extends ImprovedCommander {
+  private needsWorker = true;
+
   protected getAction(): Action | Falsy {
     const type = this.getSpawnUnitType();
     const location = this.getSpawnLocation();
@@ -11,35 +14,29 @@ export class ChurchCommander extends ImprovedCommander {
       this.globalFuel >= SPECS.UNITS[type].CONSTRUCTION_FUEL &&
       location !== null
     ) {
-      const [dx, dy] = location;
+      this.needsWorker = false;
 
       const unit = this.unitTypeToString(type);
-      const x = this.x + dx;
-      const y = this.y + dy;
-      this.log(`Spawning a ${unit} at (${x}, ${y})`);
+      this.log(`Spawning a ${unit} at (${location.x}, ${location.y})`);
 
-      return this.buildUnit(type, dx, dy);
+      return this.buildUnitAt(location, type);
     }
   }
 
   private getSpawnUnitType(): number {
-    const amountOfWorkers = this.getMyVisibleRobots().filter(
-      robot => robot.unit === SPECS.PILGRIM,
-    ).length;
-
-    if (amountOfWorkers < 3) {
-      return SPECS.PILGRIM;
+    if (this.turn < 150 && this.turn % 50 === 0) {
+      this.needsWorker = true;
     }
 
-    return SPECS.PREACHER;
+    if (this.turn >= 150 && this.turn % 200 === 0) {
+      this.needsWorker = true;
+    }
+
+    return this.needsWorker ? SPECS.PILGRIM : SPECS.PREACHER;
   }
 
-  private getSpawnLocation(): [number, number] {
-    const directions = this.getAvailableDirections();
-    return directions.length > 0 ? directions[0] : null;
-  }
-
-  private getMyVisibleRobots(): Robot[] {
-    return this.getVisibleRobots().filter(robot => robot.team === this.team);
+  private getSpawnLocation(): Cell {
+    const targets = this.cell.neighbors.filter(cell => cell.canMoveTo(false));
+    return targets.length > 0 ? targets[0] : null;
   }
 }

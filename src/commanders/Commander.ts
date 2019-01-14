@@ -23,6 +23,7 @@ export abstract class Commander {
     this.r = r;
   }
 
+  protected abstract initTurn(): void;
   protected abstract getAction(): Action | Falsy;
 
   public doTurn(): Action | Falsy {
@@ -41,7 +42,9 @@ export abstract class Commander {
     this.globalKarbonite = this.r.karbonite;
     this.lastOffer = this.r.last_offer;
 
-    this.logPrefix = `[${this.unitTypeToString(this.unit)} ${this.id}]`;
+    this.logPrefix = this.getLogPrefix();
+
+    this.initTurn();
 
     return this.getAction();
   }
@@ -145,5 +148,14 @@ export abstract class Commander {
     }
 
     return type.toString();
+  }
+
+  protected getLogPrefix(): string {
+    const unit = this.unitTypeToString(this.unit);
+
+    const padding = SPECS.MAX_ID.toString().length - this.id.toString().length;
+    const spaces = ' '.repeat(padding);
+
+    return `${spaces}[${unit} ${spaces}${this.id}]`;
   }
 }

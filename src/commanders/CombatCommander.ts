@@ -14,8 +14,18 @@ export class CombatCommander extends ImprovedCommander {
 
   private unvisited: Cell[] = [];
   private lastTarget: Cell = null;
+  private castleReceivingDone = false;
+  private castleTargets: Cell[] = [];
 
   protected getAction(): Action | Falsy {
+    if (!this.castleReceivingDone) {
+      this.readCastleCoordinates();
+    }
+
+    if (!this.castleReceivingDone) {
+      return;
+    }
+
     const enemies = this.cells.filter(
       cell =>
         (cell.hasAttacker() || cell.hasBuilding()) &&
@@ -42,7 +52,37 @@ export class CombatCommander extends ImprovedCommander {
     return this.explore();
   }
 
+  private readCastleCoordinates(): void {
+    let hasSeenBuilding = false;
+
+    for (const cell of this.cells) {
+      if (cell.hasBuilding() && cell.robot.team === this.team) {
+        hasSeenBuilding = true;
+
+        if (cell.robot.signal >= 10000) {
+          const signalStr = cell.robot.signal.toString();
+          const x = parseInt(signalStr.substr(1, 2), 10);
+          const y = parseInt(signalStr.substr(3, 2), 10);
+
+          this.castleTargets.push(this.map[y][x]);
+        }
+      }
+    }
+
+    if (this.castleTargets.length > 0 || !hasSeenBuilding) {
+      this.castleReceivingDone = true;
+    }
+  }
+
   private explore(): Action | Falsy {
+    this.castleTargets = this.castleTargets.filter(
+      target => target.canMoveTo() && !this.cell.isInRange(target, this.vision),
+    );
+
+    if (this.castleTargets.length > 0) {
+      return this.moveToNearestTarget(this.castleTargets);
+    }
+
     if (this.unvisited.length === 0) {
       this.unvisited = [...this.cells];
     }

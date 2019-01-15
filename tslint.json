@@ -5,6 +5,7 @@
     "object-literal-sort-keys": false,
     "interface-name": [true, "never-prefix"],
     "typedef": [true, "call-signature", "parameter", "property-declaration"],
-    "member-ordering": false
+    "member-ordering": false,
+    "prefer-conditional-expression": false
   }
 }

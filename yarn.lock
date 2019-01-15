@@ -285,10 +285,10 @@ base@^0.11.1:
     mixin-deep "^1.2.0"
     pascalcase "^0.1.1"
 
-bc19@^0.3.18:
-  version "0.3.18"
-  resolved "https://registry.yarnpkg.com/bc19/-/bc19-0.3.18.tgz#c69e7a3e689e8222243f0791c99e3967922ce584"
-  integrity sha512-tT6GtyjhgYNQIXm+kj35WozRP3BkqOh3uVoU+n8B90YVZVJJk4ZfJgw0tG9e0b+Hltqq89hvUjLI29W+wzOdqw==
+bc19@^0.3.22:
+  version "0.3.22"
+  resolved "https://registry.yarnpkg.com/bc19/-/bc19-0.3.22.tgz#5af326ad310707306291ca8c8a34192f16f461a3"
+  integrity sha512-3BAhub3OD3LHsxv+h1vuToKISuD1gPVPlLiQ4agLGUw6KpvWMSnGpvRTFhvQJYly+Xjh6z2e5ejLTk5LpZdF1w==
   dependencies:
     "@google-cloud/storage" "^1.7.0"
     axios "^0.18.0"

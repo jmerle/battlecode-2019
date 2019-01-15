@@ -9,8 +9,8 @@ interface GameState {
   /**
    * A map of id's of visible robots.
    *
-   * The map is represented as a 2 by 2 grid of numbers where most values are 0.
-   * If `shadow[y][x] != 0`, then `shadow[y][x]` is the id of the robot at (x, y).
+   * The map is represented as a 2 by 2 grid of numbers where a value greater than zero is a robot id.
+   * If `shadow[y][x] > 0`, then `shadow[y][x]` is the id of the robot at (x, y).
    */
   shadow: number[][];
   /**

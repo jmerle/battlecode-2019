@@ -15,8 +15,10 @@ export class ChurchCommander extends ImprovedCommander {
         this.opponentCastle = this.detectOpponentCastle();
       }
 
-      const castle = this.opponentCastle;
-      this.signal(parseInt(`1${castle.x}${castle.y}`, 10), 2);
+      const { x, y } = this.opponentCastle;
+      const xStr = x > 9 ? x : '0' + x;
+      const yStr = y > 9 ? y : '0' + y;
+      this.signal(parseInt(`1${xStr}${yStr}`, 10), 2);
 
       this.globalFuel -= 2;
     }

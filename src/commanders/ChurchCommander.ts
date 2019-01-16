@@ -1,16 +1,17 @@
 import { SPECS } from 'battlecode';
-import { Cell } from '../models/Cell';
+import { Cell } from '../common/Cell';
 import { ImprovedCommander } from './ImprovedCommander';
 
 export class ChurchCommander extends ImprovedCommander {
   private needsWorker = true;
   private opponentCastle: Cell = null;
+  private spawnPreacher = true;
 
   protected getAction(): Action | Falsy {
     const type = this.getSpawnUnitType();
     const location = this.getSpawnLocation();
 
-    if (this.unit === SPECS.CASTLE && this.globalFuel >= 2) {
+    if (this.unit === SPECS.CASTLE && this.globalFuel >= 5) {
       if (this.opponentCastle === null) {
         this.opponentCastle = this.detectOpponentCastle();
       }
@@ -18,7 +19,7 @@ export class ChurchCommander extends ImprovedCommander {
       const { x, y } = this.opponentCastle;
       const xStr = x > 9 ? x : '0' + x;
       const yStr = y > 9 ? y : '0' + y;
-      this.signal(parseInt(`1${xStr}${yStr}`, 10), 2);
+      this.signal(parseInt(`1${xStr}${yStr}`, 10), 5);
 
       this.globalFuel -= 2;
     }
@@ -28,7 +29,11 @@ export class ChurchCommander extends ImprovedCommander {
       this.globalFuel >= SPECS.UNITS[type].CONSTRUCTION_FUEL &&
       location !== null
     ) {
-      this.needsWorker = false;
+      if (this.needsWorker) {
+        this.needsWorker = false;
+      } else {
+        this.spawnPreacher = !this.spawnPreacher;
+      }
 
       const unit = this.unitTypeToString(type);
       this.log(`Spawning a ${unit} at (${location.x}, ${location.y})`);
@@ -46,7 +51,15 @@ export class ChurchCommander extends ImprovedCommander {
       this.needsWorker = true;
     }
 
-    return this.needsWorker ? SPECS.PILGRIM : SPECS.PREACHER;
+    if (this.needsWorker) {
+      return SPECS.PILGRIM;
+    }
+
+    if (this.spawnPreacher) {
+      return SPECS.PREACHER;
+    } else {
+      return SPECS.CRUSADER;
+    }
   }
 
   private getSpawnLocation(): Cell {
@@ -93,20 +106,5 @@ export class ChurchCommander extends ImprovedCommander {
     }
 
     return this.map[y][x];
-  }
-
-  private isHorizontallySymmetric(): boolean {
-    for (let y = 0; y < Math.floor(this.height / 2); y++) {
-      const rowUp = this.passableMap[y];
-      const rowDown = this.passableMap[this.height - y - 1];
-
-      for (let x = 0; x < this.width; x++) {
-        if (rowUp[x] !== rowDown[x]) {
-          return false;
-        }
-      }
-    }
-
-    return true;
   }
 }

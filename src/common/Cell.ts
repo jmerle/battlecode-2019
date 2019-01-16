@@ -42,6 +42,11 @@ export class Cell {
     return dx * dx + dy * dy <= range;
   }
 
+  public distanceTo(other: Cell): number {
+    const [dx, dy] = this.getDxDy(other);
+    return dx * dx + dy * dy;
+  }
+
   public getCellsInRange(range: number): Cell[] {
     const cells: Set<Cell> = new Set();
 

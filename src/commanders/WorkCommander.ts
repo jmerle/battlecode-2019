@@ -1,5 +1,5 @@
 import { SPECS } from 'battlecode';
-import { Cell } from '../models/Cell';
+import { Cell } from '../common/Cell';
 import { ImprovedCommander } from './ImprovedCommander';
 
 export class WorkCommander extends ImprovedCommander {

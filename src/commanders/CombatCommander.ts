@@ -1,5 +1,5 @@
 import { SPECS } from 'battlecode';
-import { Cell } from '../models/Cell';
+import { Cell } from '../common/Cell';
 import { ImprovedCommander } from './ImprovedCommander';
 
 export class CombatCommander extends ImprovedCommander {
@@ -18,6 +18,10 @@ export class CombatCommander extends ImprovedCommander {
   private castleTargets: Cell[] = [];
 
   protected getAction(): Action | Falsy {
+    if (this.turn > 1 && this.time < 200) {
+      return;
+    }
+
     if (!this.castleReceivingDone) {
       this.readCastleCoordinates();
     }

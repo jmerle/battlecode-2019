@@ -6,6 +6,7 @@
     "interface-name": [true, "never-prefix"],
     "typedef": [true, "call-signature", "parameter", "property-declaration"],
     "member-ordering": false,
-    "prefer-conditional-expression": false
+    "prefer-conditional-expression": false,
+    "no-bitwise": false
   }
 }

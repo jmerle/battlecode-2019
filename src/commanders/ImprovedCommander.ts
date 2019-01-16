@@ -1,5 +1,6 @@
 import { SPECS } from 'battlecode';
-import { Cell } from '../models/Cell';
+import { Cell } from '../common/Cell';
+import { Queue } from '../common/Queue';
 import { Commander } from './Commander';
 
 export abstract class ImprovedCommander extends Commander {
@@ -26,6 +27,10 @@ export abstract class ImprovedCommander extends Commander {
   protected robotMap: number[][];
 
   protected initTurn(): void {
+    if (this.turn > 1 && this.time < 200) {
+      return;
+    }
+
     this.karboniteCapacity = SPECS.UNITS[this.unit].KARBONITE_CAPACITY;
     this.fuelCapacity = SPECS.UNITS[this.unit].FUEL_CAPACITY;
     this.movementSpeed = SPECS.UNITS[this.unit].SPEED;
@@ -101,6 +106,21 @@ export abstract class ImprovedCommander extends Commander {
     }
   }
 
+  protected isHorizontallySymmetric(): boolean {
+    for (let y = 0; y < Math.floor(this.height / 2); y++) {
+      const rowUp = this.passableMap[y];
+      const rowDown = this.passableMap[this.height - y - 1];
+
+      for (let x = 0; x < this.width; x++) {
+        if (rowUp[x] !== rowDown[x]) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   private createCells(): void {
     if (this.turn === 1) {
       this.map = [];
@@ -138,7 +158,7 @@ export abstract class ImprovedCommander extends Commander {
   }
 
   private fillNeighbors(): void {
-    const directions: Array<[number, number]> = [
+    let directions: Array<[number, number]> = [
       [0, -1],
       [1, -1],
       [1, 0],
@@ -148,6 +168,44 @@ export abstract class ImprovedCommander extends Commander {
       [-1, 0],
       [-1, -1],
     ];
+
+    if (this.isHorizontallySymmetric()) {
+      if (this.y <= Math.floor(this.height / 2)) {
+        directions = directions.filter(d => !(d[0] === 1 && d[1] === 1));
+        directions = directions.filter(d => !(d[0] === -1 && d[1] === 1));
+        directions = directions.filter(d => !(d[0] === 0 && d[1] === 1));
+
+        directions.unshift([1, 1]);
+        directions.unshift([-1, 1]);
+        directions.unshift([0, 1]);
+      } else {
+        directions = directions.filter(d => !(d[0] === 0 && d[1] === -1));
+        directions = directions.filter(d => !(d[0] === -1 && d[1] === -1));
+        directions = directions.filter(d => !(d[0] === 1 && d[1] === -1));
+
+        directions.unshift([1, -1]);
+        directions.unshift([-1, -1]);
+        directions.unshift([0, -1]);
+      }
+    } else {
+      if (this.x <= Math.floor(this.width / 2)) {
+        directions = directions.filter(d => !(d[0] === 1 && d[1] === 1));
+        directions = directions.filter(d => !(d[0] === 1 && d[1] === -1));
+        directions = directions.filter(d => !(d[0] === 1 && d[1] === 0));
+
+        directions.unshift([1, 1]);
+        directions.unshift([1, -1]);
+        directions.unshift([1, 0]);
+      } else {
+        directions = directions.filter(d => !(d[0] === -1 && d[1] === 1));
+        directions = directions.filter(d => !(d[0] === -1 && d[1] === -1));
+        directions = directions.filter(d => !(d[0] === -1 && d[1] === 0));
+
+        directions.unshift([-1, 1]);
+        directions.unshift([-1, -1]);
+        directions.unshift([-1, 0]);
+      }
+    }
 
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
@@ -166,12 +224,12 @@ export abstract class ImprovedCommander extends Commander {
   }
 
   private createPaths(): void {
-    const queue: Cell[] = [];
+    const queue: Queue<Cell> = new Queue(this.width * this.height);
 
     this.cell.distance = 0;
     queue.push(this.cell);
 
-    while (queue.length > 0) {
+    while (!queue.isEmpty()) {
       const cell = queue.shift();
 
       for (const neighbor of cell.neighbors) {
